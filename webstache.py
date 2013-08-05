@@ -2,7 +2,7 @@
 
 import os, sys, getopt, argparse
 
-def main(argv):
+def main():
   parser = argparse.ArgumentParser(description='Generates static webpages based off of mustache templates')
   parser.add_argument('directory', nargs='?', default=os.getcwd(), help='Directory of mustache files and data')
   args = parser.parse_args()
@@ -11,4 +11,4 @@ def main(argv):
 
 
 if __name__ == "__main__":
-  main(sys.argv[1:])
+  main()

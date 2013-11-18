@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 import os, sys, getopt, argparse
 import glob
@@ -12,9 +12,9 @@ def main():
   args = parser.parse_args()
   
   print("Creating webpages from " + args.directory)
-  template_file = open(args.directory + "/base.mustache", "r")
+  template_file = open(os.path.join(args.directory, "base.mustache"), "r")
   template = template_file.read()
-  data = glob.glob(args.directory + "/*.json")
+  data = glob.glob(os.path.join(args.directory, "*.json"))
 
   dataname = []
   datafiles = []

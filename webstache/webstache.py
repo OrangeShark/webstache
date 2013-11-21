@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 
 import os, sys, getopt, argparse
-import glob, shutil
+import glob 
 import pystache
 import json
+from distutils import dir_util
 
 def main():
   parser = argparse.ArgumentParser(description='Generates static webpages based off of mustache templates')
@@ -18,16 +19,17 @@ def main():
 
   dataname = []
   datafiles = []
+  static_dir = os.path.join(args.directory, "static")
+
   for file in data:
     dataname.append(os.path.split(file)[-1].split(".")[0])
     currfile = open(file).read()
     datafiles.append(json.loads(currfile))
 
   path = os.path.join(args.directory, args.output)
-  if os.path.exists(os.path.join(args.directory, "static")):
-    shutil.copytree(os.path.join(args.directory, "static"), path)
-
-  if not os.path.exists(path):
+  if os.path.exists(static_dir):
+    dir_util.copy_tree(static_dir, path)
+  elif not os.path.exists(path):
     os.mkdir(path)
 
   i = 0

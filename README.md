@@ -15,9 +15,10 @@ webstache --help
 
 This program is used as an example project for the FIU's Panther Linux User Group's Python workshop.
 
-###Installing
+Installing
+----------
 
-##Install with setup.py
+### Install with setup.py
 Clone the repo to your machine and enter in
 ```bash
 python setup.py install

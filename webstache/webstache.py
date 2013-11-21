@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import os, sys, getopt, argparse
-import glob
+import glob, shutil
 import pystache
 import json
 
@@ -24,6 +24,9 @@ def main():
     datafiles.append(json.loads(currfile))
 
   path = os.path.join(args.directory, args.output)
+  if os.path.exists(os.path.join(args.directory, "static")):
+    shutil.copytree(os.path.join(args.directory, "static"), path)
+
   if not os.path.exists(path):
     os.mkdir(path)
 

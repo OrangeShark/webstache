@@ -9,7 +9,7 @@ setup(name='webstache',
       author_email='erik.edrosa@gmail.com',
       url='https://github.com/OrangeShark/webstache',
       license='GPLv3',
-      scripts=['webstache.py'],
+      scripts=['webstache/webstache.py'],
       install_requires=['pystache'],
       entry_points = {
         'console_scripts': [

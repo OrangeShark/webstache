@@ -9,11 +9,16 @@ from distutils import dir_util
 def main():
   parser = argparse.ArgumentParser(description='Generates static webpages based off of mustache templates')
   parser.add_argument('directory', nargs='?', default=os.getcwd(), help='Directory of mustache files and data')
-  parser.add_argument('-o', '--output', nargs='?', default='output', help='Name of directory to store the output')
+  parser.add_argument('-o', '--output', nargs='?', default='out', help='Name of directory to store the output')
   args = parser.parse_args()
   
-  print("Creating webpages from " + args.directory)
-  template_file = open(os.path.join(args.directory, "base.mustache"), "r")
+  print("Creating webpages from %s" % args.directory)
+  base = os.path.join(args.directory, "base.mustache")
+  if(not os.path.exists(base)):
+      sys.stderr.write("base.mustache not found in %s\n" % args.directory)
+      sys.exit(1)
+
+  template_file = open(base, "r")
   template = template_file.read()
   data = glob.glob(os.path.join(args.directory, "*.json"))
 

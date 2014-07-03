@@ -6,6 +6,24 @@ import pystache
 import json
 from distutils import dir_util
 
+def last(xs):
+  return xs[-1]
+
+def first(xs):
+  return xs[0]
+
+def removepath(filename):
+  return last(os.path.split(filename))
+
+def removetype(filename):
+  return first(filename.split("."))
+
+def basename(filename):
+  return removetype(removepath(filename))
+
+def loadfile(filename):
+  return json.loads(open(filename).read())
+
 def main():
   parser = argparse.ArgumentParser(description='Generates static webpages based off of mustache templates')
   parser.add_argument('directory', nargs='?', default=os.getcwd(), help='Directory of mustache files and data')
@@ -22,16 +40,12 @@ def main():
 
   template_file = open(base, "r")
   template = template_file.read()
+  template_file.close()
   data = glob.glob(os.path.join(args.directory, "*.json"))
 
-  dataname = []
-  datafiles = []
   static_dir = os.path.join(args.directory, "static")
-
-  for file in data:
-    dataname.append(os.path.split(file)[-1].split(".")[0])
-    currfile = open(file).read()
-    datafiles.append(json.loads(currfile))
+  
+  datafiles = [(basename(file), loadfile(file)) for file in data]
 
   path = os.path.join(args.directory, args.output)
   if os.path.exists(static_dir):
@@ -39,9 +53,10 @@ def main():
   elif not os.path.exists(path):
     os.mkdir(path)
 
-  for i in range(len(datafiles)):
-    htmlfile = open(os.path.join(path, dataname[i] + ".html"), "w")
-    htmlfile.write(pystache.render(template, datafiles[i]))
+  for dataname, datafile in datafiles:
+    htmlfile = open(os.path.join(path, dataname + ".html"), "w")
+    htmlfile.write(pystache.render(template, datafile))
+    htmlfile.close()
 
 
 if __name__ == "__main__":

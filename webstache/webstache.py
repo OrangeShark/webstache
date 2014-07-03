@@ -10,10 +10,12 @@ def main():
   parser = argparse.ArgumentParser(description='Generates static webpages based off of mustache templates')
   parser.add_argument('directory', nargs='?', default=os.getcwd(), help='Directory of mustache files and data')
   parser.add_argument('-o', '--output', nargs='?', default='out', help='Name of directory to store the output')
+  parser.add_argument('-b', '--base', nargs='?', default='base.mustache', help='Name of the file for the base mustache template file')
+  parser.add_argument('-m', '--menu', nargs='?', default='menu.mustache', help='Name of the file for the menu mustache template file')
   args = parser.parse_args()
   
   print("Creating webpages from %s" % args.directory)
-  base = os.path.join(args.directory, "base.mustache")
+  base = os.path.join(args.directory, args.base)
   if(not os.path.exists(base)):
       sys.stderr.write("base.mustache not found in %s\n" % args.directory)
       sys.exit(1)
@@ -37,11 +39,9 @@ def main():
   elif not os.path.exists(path):
     os.mkdir(path)
 
-  i = 0
-  while i < len(datafiles):
+  for i in range(len(datafiles)):
     htmlfile = open(os.path.join(path, dataname[i] + ".html"), "w")
     htmlfile.write(pystache.render(template, datafiles[i]))
-    i += 1
 
 
 if __name__ == "__main__":

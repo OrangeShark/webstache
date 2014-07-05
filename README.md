@@ -21,5 +21,6 @@ Installing
 ### Install with setup.py
 Clone the repo to your machine and enter in
 ```bash
-python setup.py install
+# assuming python is python3
+sudo python setup.py install
 ```

@@ -10,7 +10,8 @@ setup(name='webstache',
       url='https://github.com/OrangeShark/webstache',
       license='GPLv3',
       scripts=['webstache/webstache.py'],
-      install_requires=['pystache'],
+      install_requires=['pystache', 
+                        'markdown'],
       entry_points = {
         'console_scripts': [
           'webstache = webstache:main'

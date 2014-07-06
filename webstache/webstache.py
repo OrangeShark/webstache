@@ -104,7 +104,7 @@ def main():
     elif not os.path.exists(path):
         os.mkdir(path)
 
-    renderer = pystache.Renderer(escape=lambda u: u)
+    renderer = pystache.Renderer()
     parsed_template = pystache.parse(template)
 
     for dataname, main_content in pages:

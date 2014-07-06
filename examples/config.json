@@ -2,6 +2,16 @@
   "default": {
     "title": "OrangeShark",
     "header": "OrangeShark",
+    "menu": [
+      {
+        "name": "Home",
+        "url": "/"
+      },
+      {
+        "name": "About",
+        "url": "/about.html"
+      }
+    ],
     "rightContent": "Test",
     "footer": "OrangeShark"
   }

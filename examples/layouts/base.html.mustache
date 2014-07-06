@@ -1,36 +1,42 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <title>{{title}}</title>
-        <link type="text/css" rel="stylesheet" href="css/style.css">
-    </head>
-    <body>
-        <div id="content">
-            <div id="header">
-                <nav class="l-inline menu">
-                  <h3>{{header}}</h3>
-                  {{menu}}
-                </nav>
-                <canvas height="75">
-                </canvas>
-            </div>
-            <div id="main">
-                <div id="left">
-                    <div class="content">
-                        {{mainContent}}
-                    </div>
-                </div>
-                <div id="right">
-                    <div class="content">
-                        {{rightContent}}
-                    </div>
-                </div>
-                <br class="nofloat"/>
-                <div id="footer">
-                    {{footer}}
-                </div>
-            </div>
+  <head>
+    <meta charset="utf-8">
+    <title>{{title}}</title>
+    <link type="text/css" rel="stylesheet" href="css/style.css">
+  </head>
+  <body>
+    <div id="content">
+      <div id="header">
+        <nav class="l-inline menu">
+          <h3>{{header}}</h3>
+          <ul>
+            {{#menu}}
+            <li>
+              <a href="{{url}}">{{name}}</a>
+            </li>
+            {{/menu}}
+          </ul>
+        </nav>
+        <canvas height="75">
+        </canvas>
+      </div>
+      <div id="main">
+        <div id="left">
+          <div class="content">
+            {{{mainContent}}}
+          </div>
         </div>
-    </body>
+        <div id="right">
+          <div class="content">
+            {{rightContent}}
+          </div>
+        </div>
+        <br class="nofloat"/>
+        <div id="footer">
+          {{footer}}
+        </div>
+      </div>
+    </div>
+  </body>
 </html>

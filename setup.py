@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(name='webstache',
       version='0.1',
@@ -9,12 +9,12 @@ setup(name='webstache',
       author_email='erik.edrosa@gmail.com',
       url='https://github.com/OrangeShark/webstache',
       license='GPLv3',
-      scripts=['webstache/webstache.py'],
+      packages= find_packages(),
       install_requires=['pystache', 
                         'markdown'],
       entry_points = {
         'console_scripts': [
-          'webstache = webstache:main'
+          'webstache = webstache.webstache:main'
         ],
       }
      )

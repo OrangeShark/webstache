@@ -14,40 +14,38 @@
 # GNU General Public License for more details.
 # 
 # You should have received a copy of the GNU General Public License
-# along with this program. If not, see <http://www.gnu.org/licenses/>. 
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-import os 
-import sys 
-import getopt 
+import os
+import sys
 import argparse
-import glob 
+import glob
 import json
 from distutils import dir_util
 
-import pystache
-import markdown
-
-def last(xs):
-    return xs[-1]
-
-def first(xs):
-    return xs[0]
-
-def remove_path(filename):
-    return last(os.path.split(filename))
-
-def remove_type(filename):
-    return first(filename.split("."))
-
-def base_name(filename):
-    return remove_type(remove_path(filename))
-
-def load_page(filename):
-    return markdown.markdown(open(filename).read())
+from webstache import generator
 
 def file_not_found(filename, directory):
-    sys.stderr.write('%s not found in %s\n' % filename, directory)
+    sys.stderr.write('%s not found in %s\n' % (filename, directory))
     sys.exit(1)
+
+def read_config(config_path):
+    config_file = open(config_path)
+    config = json.load(config_file)
+    config_file.close()
+    return config
+
+def read_template(base_path):
+    template_file = open(base_path)
+    template = template_file.read()
+    template_file.close()
+    return template
+
+def create_output_dir(path, static_dir):
+    if os.path.exists(static_dir):
+        dir_util.copy_tree(static_dir, path)
+    elif not os.path.exists(path):
+        os.mkdir(path)
 
 def main():
     parser = argparse.ArgumentParser(
@@ -73,45 +71,29 @@ def main():
     config_path = os.path.join(args.directory, args.config)
 
     if not os.path.exists(config_path):
-        file_not_fouond(args.config, args.directory)
+        file_not_found(args.config, args.directory)
 
-    config_file = open(config_path)
-    config = json.load(config_file)
-    config_file.close()
+    config = read_config(config_path)
 
-    print('Creating webpages from %s' % args.directory)
     layouts_dir = os.path.join(args.directory, args.layouts)
     pages_dir = os.path.join(args.directory, args.pages)
     base_path = os.path.join(layouts_dir, args.base)
 
-
     if not os.path.exists(base_path):
-        file_not_fouond(args.base, layouts_dir)
+        file_not_found(args.base, layouts_dir)
 
-    template_file = open(base_path)
-    template = template_file.read()
-    template_file.close()
+    template = read_template(base_path)
+    
     page_paths = glob.glob(os.path.join(pages_dir, '*.md'))
 
     static_dir = os.path.join(args.directory, 'static')
-    
-    content = config['default']
-    pages = [(base_name(file), load_page(file)) for file in page_paths]
-
     path = os.path.join(args.directory, args.output)
-    if os.path.exists(static_dir):
-        dir_util.copy_tree(static_dir, path)
-    elif not os.path.exists(path):
-        os.mkdir(path)
+    create_output_dir(path, static_dir)
 
-    renderer = pystache.Renderer(escape=lambda u: u)
-    parsed_template = pystache.parse(template)
-
-    for dataname, main_content in pages:
-        content['mainContent'] = main_content
-        htmlfile = open(os.path.join(path, dataname + '.html'), 'w')
-        htmlfile.write(renderer.render(parsed_template, content))
-        htmlfile.close()
+    content = config['default']
+   
+    print('Creating webpages from %s' % args.directory)
+    generator.generate(path, content, template, page_paths)
 
 
 if __name__ == '__main__':

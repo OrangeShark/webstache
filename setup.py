@@ -14,7 +14,7 @@ setup(name='webstache',
                         'markdown'],
       entry_points = {
         'console_scripts': [
-          'webstache = webstache.webstache:main'
+          'webstache = webstache:main'
         ],
       }
      )

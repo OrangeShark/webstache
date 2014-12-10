@@ -18,6 +18,7 @@
 
 import os
 import sys
+import glob
 
 import pystache
 import markdown
@@ -40,14 +41,22 @@ def base_name(filename):
 def load_page(filename):
     return markdown.markdown(open(filename).read())
 
-def generate(path, content, template, page_paths):
+def read_template(base_path):
+    template_file = open(base_path)
+    template = template_file.read()
+    template_file.close()
+    return template
+
+def generate(pages_dir, template_base_path, content, output_dir):
+    page_paths = glob.glob(os.path.join(pages_dir, '*.md'))
     pages = [(base_name(file), load_page(file)) for file in page_paths]
 
+    template = read_template(template_base_path)
     renderer = pystache.Renderer(escape=lambda u: u)
     parsed_template = pystache.parse(template)
 
     for dataname, main_content in pages:
         content['mainContent'] = main_content
-        htmlfile = open(os.path.join(path, dataname + '.html'), 'w')
+        htmlfile = open(os.path.join(output_dir, dataname + '.html'), 'w')
         htmlfile.write(renderer.render(parsed_template, content))
         htmlfile.close()

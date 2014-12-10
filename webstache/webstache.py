@@ -35,12 +35,6 @@ def read_config(config_path):
     config_file.close()
     return config
 
-def read_template(base_path):
-    template_file = open(base_path)
-    template = template_file.read()
-    template_file.close()
-    return template
-
 def create_output_dir(path, static_dir):
     if os.path.exists(static_dir):
         dir_util.copy_tree(static_dir, path)
@@ -77,23 +71,19 @@ def main():
 
     layouts_dir = os.path.join(args.directory, args.layouts)
     pages_dir = os.path.join(args.directory, args.pages)
-    base_path = os.path.join(layouts_dir, args.base)
+    template_base_path = os.path.join(layouts_dir, args.base)
 
-    if not os.path.exists(base_path):
+    if not os.path.exists(template_base_path):
         file_not_found(args.base, layouts_dir)
-
-    template = read_template(base_path)
     
-    page_paths = glob.glob(os.path.join(pages_dir, '*.md'))
-
     static_dir = os.path.join(args.directory, 'static')
-    path = os.path.join(args.directory, args.output)
-    create_output_dir(path, static_dir)
+    output_path = os.path.join(args.directory, args.output)
+    create_output_dir(output_path, static_dir)
 
     content = config['default']
    
     print('Creating webpages from %s' % args.directory)
-    generator.generate(path, content, template, page_paths)
+    generator.generate(pages_dir, template_base_path, content, output_path)
 
 
 if __name__ == '__main__':

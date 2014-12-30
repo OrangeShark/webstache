@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>{{title}}</title>
+    <!-- CSS -->
+    <link type="text/css" rel="stylesheet" href="/css/pure-min.css">
+    <link type="text/css" rel="stylesheet" href="/css/grids-responsive-min.css">
+    <link type="text/css" rel="stylesheet" href="/css/style.css">
+  </head>
+
+  <body>
+    <div id="layout" class="pure-g">
+      
+      <div id="menu" class="pure-u-1">
+        <div class="home-menu pure-menu pure-menu-open pure-menu-horizontal">
+          <a href="/" class="pure-menu-heading">{{header}}</a>
+          
+          <ul>
+            <li><a href="#">Link</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="pure-u-1 pure-u-md-3-4">
+        <div class="content">
+          {{content}}
+        </div>
+      </div>
+      
+      <div class="pure-u-1 pure-u-md-1-4">
+        <div class="sidebar">
+          stuff
+        </div>
+      </div>
+
+      <div class="pure-u-1">
+        <div class="footer">
+          Footer stuff
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

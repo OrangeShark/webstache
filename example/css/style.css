@@ -1,0 +1,19 @@
+body {
+    background: #f4f4f4;
+}
+
+.home-menu.pure-menu-open {
+    background: #ffd173;
+}
+
+.content {
+
+}
+
+a {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}

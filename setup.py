@@ -3,7 +3,7 @@
 from setuptools import setup, find_packages
 
 setup(name='webstache',
-      version='0.1',
+      version='0.2',
       description='webstache is a command line program which generates static webpages using mustache',
       author='Erik Edrosa',
       author_email='erik.edrosa@gmail.com',

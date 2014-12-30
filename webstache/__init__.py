@@ -23,17 +23,29 @@ import glob
 import json
 from distutils import dir_util
 
-from webstache import generator
+from webstache.generator import generate
+
+class Webstache:
+    def __init__(self, config, directory):
+        self.host = config['host']
+        self.title = config['title']
+        self.author = config['author']
+        self.header = config['header']
+        self.post_limit = config['post_limit']
+        self.layout_dir = os.path.join(directory, config['layout_dir'])
+        self.blog_dir = os.path.join(directory, config['blog_dir'])
+        self.output_dir = os.path.join(directory, config['output_dir'])
 
 def file_not_found(filename, directory):
     sys.stderr.write('%s not found in %s\n' % (filename, directory))
     sys.exit(1)
 
-def read_config(config_path):
+def read_config(config_path, directory):
     config_file = open(config_path)
     config = json.load(config_file)
     config_file.close()
-    return config
+    webstache_config = Webstache(config, directory)
+    return webstache_config
 
 def create_output_dir(path, static_dir):
     if os.path.exists(static_dir):
@@ -46,20 +58,11 @@ def main():
       description='Generates static webpages based off of mustache templates')
     parser.add_argument('directory', nargs='?', default=os.getcwd(),
                         help='Directory of mustache files and data')
-    parser.add_argument('-o', '--output', nargs='?', default='out',
-                        help='Name of directory to store the output')
-    parser.add_argument('-l', '--layouts', nargs='?',
-                        default='layouts/',
-                        help='Directory of layout files')
-    parser.add_argument('-p', '--pages', nargs='?',
-                        default='pages/',
-                        help='Directory of pages')
+    parser.add_argument('--init', action='store_true',
+                        help='Initialize default files and directories')
     parser.add_argument('-c', '--config', nargs='?',
                         default='config.json',
                         help='Name of config file')
-    parser.add_argument('-b', '--base', nargs='?',
-                        default='base.html.mustache',
-                        help='Name of the base layout')
     args = parser.parse_args()
 
     config_path = os.path.join(args.directory, args.config)
@@ -67,23 +70,10 @@ def main():
     if not os.path.exists(config_path):
         file_not_found(args.config, args.directory)
 
-    config = read_config(config_path)
-
-    layouts_dir = os.path.join(args.directory, args.layouts)
-    pages_dir = os.path.join(args.directory, args.pages)
-    template_base_path = os.path.join(layouts_dir, args.base)
-
-    if not os.path.exists(template_base_path):
-        file_not_found(args.base, layouts_dir)
+    config = read_config(config_path, args.directory)
     
-    static_dir = os.path.join(args.directory, 'static')
-    output_path = os.path.join(args.directory, args.output)
-    create_output_dir(output_path, static_dir)
-
-    content = config['default']
-   
     print('Creating webpages from %s' % args.directory)
-    generator.generate(pages_dir, template_base_path, content, output_path)
+    generator.generate(config)
 
 
 if __name__ == '__main__':

@@ -1,5 +1,11 @@
 <article>
- <h1><a href="/{{uri}}">{{title}}</a></h1>
- <p>{{date}}</p>
- {{content}}
+  <h1 class="post-title">
+    {{title}}
+  </h1>
+  <p class="post-meta">{{date}} -
+    {{#tags}}
+      <span class="tag">{{tag}}</span>
+    {{/tags}}
+  </p>
+  {{content}}
 </article>

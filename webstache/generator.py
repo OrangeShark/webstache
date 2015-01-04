@@ -25,6 +25,7 @@ import pystache
 import markdown
 
 from webstache.blogpost import (Post, parse_post_file)
+from webstache.page import Page
 
 def create_dir_if_needed(file_path):
     dirname = os.path.dirname(file_path)
@@ -38,7 +39,9 @@ def read_template(base_path):
     return template
 
 def parse_post(post_file):
-    md = markdown.Markdown(extensions = ['markdown.extensions.meta'])
+    md = markdown.Markdown(extensions = ['markdown.extensions.meta',
+                                         'markdown.extensions.fenced_code',
+                                         'markdown.extensions.codehilite'])
     html = md.convert(post_file.read())
     return md.Meta['title'][0], md.Meta['date'][0], md.Meta['tags'][0].split(', '), html
 
@@ -49,24 +52,15 @@ def create_post(post_path):
 
 def generate(config):
     page_template = read_template(os.path.join(config.layout_dir, 'page.mustache'))
-    index_post_template = read_template(os.path.join(config.layout_dir, 'indexpost.mustache'))
     post_template = read_template(os.path.join(config.layout_dir, 'post.mustache'))
     # Don't escape html
     renderer = pystache.Renderer(escape=lambda u: u)
     post_paths = glob.glob(os.path.join(config.blog_dir, '*.md'))
     post_paths.sort(reverse=True)
-
+    
     posts = [create_post(post) for post in post_paths]
-    # generate posts for the index
-    blog_posts = generate_blog(renderer, index_post_template, posts, None)
-    index_blog_posts = itertools.islice(blog_posts, 5)
-    content = '\n'.join([post for post in index_blog_posts])
 
-    index_path = os.path.join(config.output_dir, 'index.html')
-    create_dir_if_needed(index_path)
-    index_file = open(index_path, 'w')
-    index_file.write(renderer.render(page_template, config, {'content': content}))
-    index_file.close()
+    generate_index(renderer, page_template, config, posts)
     # generate posts pages
     blog_pages = zip(map(Post.uri, posts), generate_blog(renderer, post_template, posts, None))
     for uri, page in blog_pages:
@@ -76,8 +70,20 @@ def generate(config):
         page_file.write(renderer.render(page_template, config, {'content': page}))
         page_file.close()
 
-def generate_index():
-    pass
+def generate_index(renderer, page_template, config, posts):
+    index_post_template = read_template(os.path.join(config.layout_dir, 'indexpost.mustache'))
+    # generate posts for the index
+    blog_posts = generate_blog(renderer, index_post_template, posts, None)
+    index_blog_posts = itertools.islice(blog_posts, 5)
+    content = '\n'.join([post for post in index_blog_posts])
+
+    index_page = Page("index", config.host, config.title,
+                      config.author, config.header, content)
+    index_path = os.path.join(config.output_dir, index_page.uri())
+    create_dir_if_needed(index_path)
+    index_file = open(index_path, 'w')
+    index_file.write(renderer.render(page_template, index_page))
+    index_file.close()
 
 def generate_page():
     pass

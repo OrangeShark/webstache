@@ -6,14 +6,45 @@ body {
     background: #ffd173;
 }
 
-.content {
-
-}
-
 a {
     text-decoration: none;
+    color: #576fab
 }
 
 a:hover {
     text-decoration: underline;
 }
+
+.post-title {
+    color: #222;
+    margin-bottom: 0.2em;
+}
+
+.post-meta {
+    color: #999;
+    margin: 0px;
+}
+
+.content {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 768px;
+  padding: 5px;
+}
+
+.footer {
+    font-size: 70%;
+    color: #555;
+    padding: 20px;
+}
+
+.codehilite pre {
+   background-color: #f7f7f7;
+   padding: 15px;
+   font-size: 85%;
+ }
+
+ article img {
+   margin-left: auto;
+   margin-right: auto;
+ }

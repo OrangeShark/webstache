@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # webstache - static site generator
 # Copyright (C) 2013-2014 Erik Edrosa
 # 
@@ -38,42 +36,48 @@ def read_template(base_path):
     template_file.close()
     return template
 
-def parse_post(post_file):
-    md = markdown.Markdown(extensions = ['markdown.extensions.meta',
-                                         'markdown.extensions.fenced_code',
-                                         'markdown.extensions.codehilite'])
+def parse_post(md, post_file):
     html = md.convert(post_file.read())
     return md.Meta['title'][0], md.Meta['date'][0], md.Meta['tags'][0].split(', '), html
 
-def create_post(post_path):
+def create_post(md, post_path):
     post_file = open(post_path)
-    title, date, tags, content = parse_post(post_file)
+    title, date, tags, content = parse_post(md, post_file)
     return Post(post_path, title, date, tags, content)
 
 def generate(config):
     page_template = read_template(os.path.join(config.layout_dir, 'page.mustache'))
     post_template = read_template(os.path.join(config.layout_dir, 'post.mustache'))
+    md = markdown.Markdown(extensions = ['markdown.extensions.meta',
+                                         'markdown.extensions.fenced_code',
+                                         'markdown.extensions.codehilite'])
     # Don't escape html
     renderer = pystache.Renderer(escape=lambda u: u)
     post_paths = glob.glob(os.path.join(config.blog_dir, '*.md'))
     post_paths.sort(reverse=True)
     
-    posts = [create_post(post) for post in post_paths]
+    posts = [create_post(md, post) for post in post_paths]
 
     generate_index(renderer, page_template, config, posts)
     # generate posts pages
-    blog_pages = zip(map(Post.uri, posts), generate_blog(renderer, post_template, posts, None))
-    for uri, page in blog_pages:
-        page_path = os.path.join(config.output_dir, uri)
+    def create_page(post, content):
+        page = Page(post.src, config.host, config.title + ' - ' + post.title, 
+                    config.author, config.header, content)
+        page.uri = post.uri()
+        return page
+
+    blog_pages = map(create_page, posts, generate_blog(renderer, post_template, posts))
+    for page in blog_pages:
+        page_path = os.path.join(config.output_dir, page.uri)
         create_dir_if_needed(page_path)
-        page_file = open(os.path.join(config.output_dir, uri), 'w')
-        page_file.write(renderer.render(page_template, config, {'content': page}))
+        page_file = open(page_path, 'w')
+        page_file.write(renderer.render(page_template, page))
         page_file.close()
 
 def generate_index(renderer, page_template, config, posts):
     index_post_template = read_template(os.path.join(config.layout_dir, 'indexpost.mustache'))
     # generate posts for the index
-    blog_posts = generate_blog(renderer, index_post_template, posts, None)
+    blog_posts = generate_blog(renderer, index_post_template, posts)
     index_blog_posts = itertools.islice(blog_posts, 5)
     content = '\n'.join([post for post in index_blog_posts])
 
@@ -85,11 +89,11 @@ def generate_index(renderer, page_template, config, posts):
     index_file.write(renderer.render(page_template, index_page))
     index_file.close()
 
-def generate_page():
+def generate_pages(renderer, page_template, pages):
     pass
 
-def generate_blog(renderer, post_template, posts, widgets):
+def generate_blog(renderer, post_template, posts):
     def generate_post(post):
-        return renderer.render(post_template, post, widgets)
+        return renderer.render(post_template, post)
 
     return map(generate_post, posts)

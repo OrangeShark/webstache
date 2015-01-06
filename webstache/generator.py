@@ -78,16 +78,35 @@ def generate_index(renderer, page_template, config, posts):
     index_post_template = read_template(os.path.join(config.layout_dir, 'indexpost.mustache'))
     # generate posts for the index
     blog_posts = generate_blog(renderer, index_post_template, posts)
-    index_blog_posts = itertools.islice(blog_posts, 5)
-    content = '\n'.join([post for post in index_blog_posts])
+    index_blog_posts = list(itertools.islice(blog_posts, 5))
+    page_num = 1
+    prev_page = None
 
-    index_page = Page("index", config.host, config.title,
-                      config.author, config.header, content)
-    index_path = os.path.join(config.output_dir, index_page.uri())
-    create_dir_if_needed(index_path)
-    index_file = open(index_path, 'w')
-    index_file.write(renderer.render(page_template, index_page))
-    index_file.close()
+    while index_blog_posts:
+        content = '\n'.join([post for post in index_blog_posts])
+        index_page = Page( (page_num == 1 and "index") or ("index-" + str(page_num)), 
+                           config.host, config.title, config.author, 
+                           config.header, content)
+        # link pages together
+        if prev_page:
+            index_page.prev_page = prev_page
+            prev_page.next_page = index_page
+
+        index_blog_posts = list(itertools.islice(blog_posts, 5))
+        prev_page = index_page
+        page_num += 1
+
+    while prev_page:
+        index_page = prev_page
+        prev_page = index_page.prev_page
+
+        index_page_uri = index_page.uri()
+        index_path = os.path.join(config.output_dir, index_page_uri)
+        create_dir_if_needed(index_path)
+        index_file = open(index_path, 'w')
+        index_file.write(renderer.render(page_template, index_page))
+        index_file.close()
+
 
 def generate_pages(renderer, page_template, pages):
     pass

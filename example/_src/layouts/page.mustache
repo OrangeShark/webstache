@@ -27,6 +27,12 @@
       <div class="pure-u-1 pure-u-md-3-4">
         <div class="content">
           {{content}}
+          {{#prev_page}}
+            <a href="{{uri}}">Newer</a>
+          {{/prev_page}}
+          {{#next_page}}
+            <a href="{{uri}}">Older</a>
+          {{/next_page}}
         </div>
       </div>
       

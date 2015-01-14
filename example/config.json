@@ -1,5 +1,5 @@
 {
-    "host": "http://www.example.com",
+    "host": "http://www.example.com/",
     "title": "My title",
     "author": "John Smith",
     "description": "A blog about stuff",

@@ -71,6 +71,7 @@ def generate(config):
         return page
 
     blog_pages = map(create_page, posts, generate_blog(renderer, post_template, posts))
+
     for page in blog_pages:
         page_path = os.path.join(config.output_dir, page.uri)
         create_dir_if_needed(page_path)
@@ -79,6 +80,7 @@ def generate(config):
         page_file.close()
 
     generate_rss_feed(config, posts)
+    generate_sitemap(config, posts)
 
 def generate_index(renderer, page_template, config, posts):
     index_post_template = read_template(os.path.join(config.layout_dir, 'indexpost.mustache'))
@@ -143,3 +145,9 @@ def generate_rss_feed(config, posts):
     rss_path = os.path.join(config.output_dir, 'feed.xml')
     
     rss.write_xml(open(rss_path, 'w'))
+
+def generate_sitemap(config, pages):
+    sitemap = '\n'.join([config.host + page.uri() for page in pages])
+    sitemap_path = os.path.join(config.output_dir, 'sitemap.txt')
+    sitemap_file = open(sitemap_path, 'w')
+    sitemap_file.write(sitemap)

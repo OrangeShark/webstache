@@ -30,6 +30,7 @@ class Webstache:
         self.host = config['host']
         self.title = config['title']
         self.author = config['author']
+        self.description = config['description']
         self.header = config['header']
         self.post_limit = config['post_limit']
         self.layout_dir = os.path.join(directory, config['layout_dir'])

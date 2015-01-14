@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with webstache. If not, see <http://www.gnu.org/licenses/>.
 
+from datetime import datetime
 import itertools
 import os
 import sys
@@ -23,6 +24,7 @@ import glob
 
 import pystache
 import markdown
+import PyRSS2Gen as RSS2
 
 from webstache.blogpost import (Post, parse_post_file)
 from webstache.page import Page
@@ -76,6 +78,8 @@ def generate(config):
         page_file.write(renderer.render(page_template, page))
         page_file.close()
 
+    generate_rss_feed(config, posts)
+
 def generate_index(renderer, page_template, config, posts):
     index_post_template = read_template(os.path.join(config.layout_dir, 'indexpost.mustache'))
     # generate posts for the index
@@ -118,3 +122,24 @@ def generate_blog(renderer, post_template, posts):
         return renderer.render(post_template, post)
 
     return map(generate_post, posts)
+
+def generate_rss_feed(config, posts):
+    def generate_item(post):
+        url = config.host + post.uri()
+        return RSS2.RSSItem(
+            title = post.title,
+            link = url,
+            description = post.content,
+            guid = RSS2.Guid(url),
+            pubDate = post._date)
+
+    rss = RSS2.RSS2(
+        title = config.title,
+        link = config.host,
+        description = config.description,
+        lastBuildDate = datetime.now(),
+        items = map(generate_item, posts))
+    
+    rss_path = os.path.join(config.output_dir, 'feed.xml')
+    
+    rss.write_xml(open(rss_path, 'w'))

@@ -11,7 +11,8 @@ setup(name='webstache',
       license='GPLv3',
       packages= find_packages(),
       install_requires=['pystache', 
-                        'markdown'],
+                        'markdown',
+                        'pyrss2gen'],
       entry_points = {
         'console_scripts': [
           'webstache = webstache:main'

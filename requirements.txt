@@ -1,2 +1,3 @@
 pystache
 markdown
+pyrss2gen

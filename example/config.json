@@ -2,8 +2,9 @@
     "host": "http://www.example.com",
     "title": "My title",
     "author": "John Smith",
-    "header": "OrangeShark",
-    "post_limit": 10,
+    "description": "A blog about stuff",
+    "header": "My Header",
+    "post_limit": 5,
     "layout_dir": "_src/layouts",
     "blog_dir": "_src/posts",
     "output_dir": "."

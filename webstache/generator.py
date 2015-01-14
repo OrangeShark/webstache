@@ -80,7 +80,7 @@ def generate_index(renderer, page_template, config, posts):
     index_post_template = read_template(os.path.join(config.layout_dir, 'indexpost.mustache'))
     # generate posts for the index
     blog_posts = generate_blog(renderer, index_post_template, posts)
-    index_blog_posts = list(itertools.islice(blog_posts, 5))
+    index_blog_posts = list(itertools.islice(blog_posts, config.post_limit))
     page_num = 1
     prev_page = None
 
@@ -94,7 +94,7 @@ def generate_index(renderer, page_template, config, posts):
             index_page.prev_page = prev_page
             prev_page.next_page = index_page
 
-        index_blog_posts = list(itertools.islice(blog_posts, 5))
+        index_blog_posts = list(itertools.islice(blog_posts, config.post_limit))
         prev_page = index_page
         page_num += 1
 

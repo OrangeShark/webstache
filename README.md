@@ -4,9 +4,7 @@ webstache is a command line program which generates static webpages using mustac
 ```bash
 webstache [directory]
 ```
-will create a directory called out with the generated HTML pages generated from the specified directory or the current working directory if left empty.
-
-For any file which does not need to be generated, like JavaScript and Cascading Style Sheets, can be put into a directory named static in the input directory. They will be copied over into the root of the output directory.
+will output the generated HTML pages from the specified directory or the current working directory if left empty. 
 
 Read the help for more options
 ```bash
@@ -32,17 +30,24 @@ webstache generates webpages based on the contents of the directory. A standard 
 ```
 .
 ├── config.json
-├── layouts
-│   └── base.html.mustache
-├── pages
-│   └── index.md
-└── static
-    ├── css
-    └── js
-
+├── css
+├── js
+└── _src
+    ├── layouts
+    │   ├── indexpost.mustache
+    │   ├── page.mustache
+    │   ├── post.mustache
+    └── posts
+        ├── 2013-04-13-bar.md
+        ├── 2014-01-24-foo-bar.md
+        ├── 2014-12-24-hello-world.md
+        ├── 2015-01-05-a-new-post.md
+        ├── 2015-02-11-some-scheme.md
+        └── 2015-03-15-clojure.md
 ```
 
 `config.json` is the configuration file.
-`layouts` directory contains the layout templates with base.html.mustache being the main template.
-`pages` is a directory of markdown pages which will be inserted into the mainContent of each template.
-`static` is a directory of files which will be copied over to the output directory.
+`_src/layouts` directory contains the layout templates with page.mustache being the main template used for each page.
+`_src/posts` directory contains all the blog posts with the name format yyyy-mm-dd-htmlname.md.
+
+The location of the above files and directories can be specified in the config.

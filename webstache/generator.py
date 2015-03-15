@@ -46,7 +46,13 @@ def parse_post(md, post_file):
 
 def create_post(md, post_path):
     post_file = open(post_path)
-    title, date, tags, content = parse_post(md, post_file)
+    try:
+        title, date, tags, content = parse_post(md, post_file)
+    except KeyError as key:
+        sys.stderr.write('{} meta tag not found in {}\n'.format(key,
+                                                                os.path.basename(post_path)))
+        sys.exit(1)
+
     return Post(post_path, title, date, tags, content)
 
 def generate(config):

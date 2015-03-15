@@ -44,7 +44,7 @@ class Webstache:
         self.blog_dir = os.path.join(directory,
                                      key_available(config, 'blog_dir'))
         self.output_dir = os.path.join(directory,
-                                       key_available(config, 'output_dir')
+                                       key_available(config, 'output_dir'))
 
 def file_not_found(filename, directory):
     sys.stderr.write('%s not found in %s\n' % (filename, directory))

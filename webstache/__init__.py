@@ -25,17 +25,26 @@ from distutils import dir_util
 
 from webstache.generator import generate
 
+def key_available(d, key):
+    if key in d:
+        return d[key]
+    sys.stderr.write('"%s" is missing from config\n' % key)
+    sys.exit(1)
+
 class Webstache:
     def __init__(self, config, directory):
-        self.host = config['host']
-        self.title = config['title']
-        self.author = config['author']
-        self.description = config['description']
-        self.header = config['header']
-        self.post_limit = config['post_limit']
-        self.layout_dir = os.path.join(directory, config['layout_dir'])
-        self.blog_dir = os.path.join(directory, config['blog_dir'])
-        self.output_dir = os.path.join(directory, config['output_dir'])
+        self.host = key_available(config, 'host')
+        self.title = key_available(config, 'title')
+        self.author = key_available(config, 'author')
+        self.description = key_available(config, 'description')
+        self.header = key_available(config, 'header')
+        self.post_limit = key_available(config, 'post_limit')
+        self.layout_dir = os.path.join(directory, 
+                                       key_available(config, 'layout_dir'))
+        self.blog_dir = os.path.join(directory,
+                                     key_available(config, 'blog_dir'))
+        self.output_dir = os.path.join(directory,
+                                       key_available(config, 'output_dir')
 
 def file_not_found(filename, directory):
     sys.stderr.write('%s not found in %s\n' % (filename, directory))
